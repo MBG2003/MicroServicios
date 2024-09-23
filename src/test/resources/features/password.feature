@@ -2,25 +2,25 @@ Feature: Password Recovery Feature
 
   Scenario: Successful password update
     Given I am on the password recovery page
-    When I submit a valid email "mateo.baezg@example.com" and a new password "newpass123"
-    Then I should receive a 200 OK response
-    And the password should be successfully updated
+    And I have registered a new user
+    When I submit the registered user's email and a new password
+    Then I should receive a password type 200 "OK" response
+    And I should see a password type message "Contraseña actualizada exitosamente"
 
   Scenario: Password update fails when email is missing
     Given I am on the password recovery page
     When I submit no email and a new password "newpass123"
-    Then I should receive a 400 Bad Request response
-    And I should see a message "Email and new password are required"
+    Then I should receive a password type 400 "Bad Request" response
+    And I should see a password type message "Email y nueva contraseña son requeridos"
 
   Scenario: Password update fails when new password is missing
     Given I am on the password recovery page
-    When I submit an email "mateo.baezg@example.com" and no new password
-    Then I should receive a 400 Bad Request response
-    And I should see a message "Email and new password are required"
+    When I submit the registered user's email and no new password
+    Then I should receive a password type 400 "Bad Request" response
+    And I should see a password type message "Email y nueva contraseña son requeridos"
 
-  Scenario: Server error when updating password
+  Scenario: Password update fails when the user is not found
     Given I am on the password recovery page
-    When I submit an email "mateo.baezg@example.com" and a new password "newpass123"
-    And the server fails to process the request
-    Then I should receive a 500 Internal Server Error response
-    And I should see a message "Server error"
+    When I submit an unregistered email and a new password
+    Then I should receive a password type 404 "Not Found" response
+    And I should see a password type message "Usuario no encontrado"

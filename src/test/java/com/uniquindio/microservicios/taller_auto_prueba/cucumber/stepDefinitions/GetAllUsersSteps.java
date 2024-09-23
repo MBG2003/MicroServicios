@@ -1,5 +1,8 @@
 package com.uniquindio.microservicios.taller_auto_prueba.cucumber.stepDefinitions;
 
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.DataManager;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.ResponseUtils;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.UserManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -7,16 +10,22 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
 
 public class GetAllUsersSteps {
 
     private Response response;
+    private String authToken;
 
-    @Given("I am authenticated")
-    public void iAmAuthenticated() {
-        // Simulación de la autenticación
-        System.out.println("Authenticated user");
+    @Given("I am authenticated with a valid token for users")
+    public void iAmAuthenticatedWithValidToken() {
+        // Simulación de la autenticación y obtención del token usando UserManager
+        UserManager userManager = UserManager.getInstance();
+        userManager.registerNewUser(); // Registra un nuevo usuario
+
+        // Inicia sesión y obtiene el token
+        authToken = userManager.loginAndGetToken();
+        DataManager.getInstance().setAuthToken("currentToken", authToken); // Guarda el token
+        System.out.println("Authenticated user with token: " + authToken);
     }
 
     @When("I request to get all users")
@@ -26,32 +35,52 @@ public class GetAllUsersSteps {
         // Realiza la petición GET al endpoint para obtener todos los usuarios
         response = given()
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + authToken) // Incluye el token en el encabezado
                 .get("/api/users");
 
         System.out.println("Response: " + response.getBody().asString());
     }
 
-    @Then("I should receive a 200 OK response with a list of users")
-    public void iShouldReceive200OkWithListOfUsers() {
-        assertEquals(200, response.getStatusCode());
+    @When("I request to get all users and there are no users")
+    public void iRequestToGetAllUsersAndThereAreNoUsers() {
+        RestAssured.baseURI = "http://localhost:3000";
 
-        // Opcional: Verificar que la respuesta contiene una lista de usuarios
-        assert response.jsonPath().getList("$").size() > 0;
+        // Eliminamos todos los usuarios
+        response = given()
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + authToken)
+                .delete("/api/users");
+
+        System.out.println("Delete Response: " + response.getBody().asString());
+
+        // Realiza la petición GET al endpoint para obtener todos los usuarios
+        response = given()
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + authToken) // Incluye el token en el encabezado
+                .get("/api/users");
+
+        System.out.println("Response: " + response.getBody().asString());
     }
 
-    @Then("I should receive a 404 Not Found response with a message {string}")
-    public void iShouldReceive404NotFoundWithMessage(String message) {
-        assertEquals(404, response.getStatusCode());
+    @Then("I should receive a {int} {string} response with all users details")
+    public void iShouldReceiveResponseWithAllUsersDetails(int expectedStatusCode, String expectedStatusMessage) {
+        ResponseUtils.verifyStatusCode(response, expectedStatusCode);
+        System.out.println("Received " + expectedStatusMessage + " response: " + expectedStatusCode);
 
-        String responseMessage = response.jsonPath().getString("message");
-        assertEquals(message, responseMessage);
+        // Verifica que la respuesta contiene una lista de usuarios
+        if (expectedStatusCode == 200) {
+            assert response.jsonPath().getList("$").size() > 0;
+        }
     }
 
-    @Then("I should receive a 500 Internal Server Error response with a message {string}")
-    public void iShouldReceive500InternalServerErrorWithMessage(String message) {
-        assertEquals(500, response.getStatusCode());
+    @Then("I should see a users type message {string}")
+    public void iShouldSeeUserMessage(String expectedMessage) {
+        ResponseUtils.verifyMessage(response, expectedMessage);
+    }
 
-        String responseMessage = response.jsonPath().getString("message");
-        assertEquals(message, responseMessage);
+    @Then("I should receive a users type {int} {string} response")
+    public void iShouldReceiveUserResponse(int statusCode, String statusMessage) {
+        ResponseUtils.verifyStatusCode(response, statusCode);
+        System.out.println("Received " + statusMessage + " response: " + statusCode);
     }
 }

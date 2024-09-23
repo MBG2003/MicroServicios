@@ -1,5 +1,9 @@
 package com.uniquindio.microservicios.taller_auto_prueba.cucumber.stepDefinitions;
 
+import com.github.javafaker.Faker;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.DataManager;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.ResponseUtils;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.UserManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,83 +12,66 @@ import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+
 public class DeleteSteps {
+    private Faker faker = new Faker();
+
     private Response response;
     private String authToken;
+    private String authenticatedUserId;
 
-    @Given("I am authenticated with user ID {string}")
-    public void iAmAuthenticatedWithUserId(String userId) {
-        RestAssured.baseURI = "http://localhost:3000";
+    //    Given I am authenticated with a valid token for delete
+    @Given("I am authenticated with a valid token for delete")
+    public void iAmAuthenticatedWithValidTokenForUpdate() {
+        // Registrar un nuevo usuario si es necesario y obtener su ID
+        UserManager userManager = UserManager.getInstance();
+        userManager.registerNewUser();
 
-        // Simulación de autenticación
-        // Aquí debes implementar la lógica para obtener un token de autenticación o cualquier otro mecanismo de autenticación
-        // En este ejemplo, se asume que el token se asigna directamente
-        authToken = "Bearer dummy-token"; // Reemplaza esto con el token real si es necesario
-        System.out.println("Authenticated with user ID: " + userId);
+        // Realiza el login para obtener el token de autenticación
+        authToken = userManager.loginAndGetToken();
+        authenticatedUserId = DataManager.getInstance().getUserId("currentUser");
+
+        DataManager.getInstance().setAuthToken("currentToken", authToken);
+        System.out.println("[UpdateSteps] Authenticated user with ID: " + authenticatedUserId + " and token: " + authToken);
     }
 
-    @When("I request to delete user by ID {string}")
-    public void iRequestToDeleteUserById(String userId) {
+    @When("I request to delete my user")
+    public void iRequestToUpdateTheUserWithValidData() {
         RestAssured.baseURI = "http://localhost:3000";
 
-        // Realiza la solicitud DELETE al endpoint con el ID del usuario
         response = given()
-                .header("Authorization", authToken)
-                .when()
-                .delete("/api/users/" + userId);
+                .header("Authorization", "Bearer " + authToken)
+                .header("Content-Type", "application/json")
+                .delete("/api/users/" + authenticatedUserId);
 
-        // Imprime la respuesta en consola para fines de depuración
-        System.out.println("Response: " + response.getBody().asString());
+        System.out.println("[DeleteSteps] Response: " + response.getBody().asString());
     }
 
-    @Then("I should receive a {int} OK response")
-    public void iShouldReceiveA200OKResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 200 (OK)
-        assertEquals(statusCode, response.getStatusCode());
+    // WhenI request to delete another user
+    @When("I request to delete another user")
+    public void iRequestToUpdateAnotherUserWithValidData() {
+        RestAssured.baseURI = "http://localhost:3000";
+        UserManager userManager = UserManager.getInstance();
+        userManager.registerNewUser();
+        String anotherUserId = DataManager.getInstance().getUserId("currentUser");
 
-        // Opcional: Verifica si la respuesta contiene el mensaje esperado
-        String successMessage = response.jsonPath().getString("message");
-        System.out.println("Success message: " + successMessage);
+        response = given()
+                .header("Authorization", "Bearer " + authToken)
+                .header("Content-Type", "application/json")
+                .delete("/api/users/" + anotherUserId);
+
+        System.out.println("[DeleteSteps] Response: " + response.getBody().asString());
     }
 
-    @Then("I should receive a {int} Forbidden response")
-    public void iShouldReceiveA403ForbiddenResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 403 (Forbidden)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica el mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("message");
-        System.out.println("Error message: " + errorMessage);
+    @Then("I should receive an delete type {int} {string} response")
+    public void iShouldReceiveUserResponse(int statusCode, String statusMessage) {
+        ResponseUtils.verifyStatusCode(response, statusCode);
+        System.out.println("Received " + statusMessage + " response: " + statusCode);
     }
 
-    @Then("I should receive a {int} Not Found response")
-    public void iShouldReceiveA404NotFoundResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 404 (Not Found)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica el mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("message");
-        System.out.println("Error message: " + errorMessage);
-    }
-
-    @Then("I should receive a {int} Bad Request response")
-    public void iShouldReceiveABadRequestResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 400 (Bad Request)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica el mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("message");
-        System.out.println("Error message: " + errorMessage);
-    }
-
-    @Then("I should receive a {int} Internal Server Error response")
-    public void iShouldReceiveA500InternalServerErrorResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 500 (Internal Server Error)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica el mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("message");
-        System.out.println("Error message: " + errorMessage);
+    @Then("I should see an delete type message {string}")
+    public void iShouldSeeUserMessage(String expectedMessage) {
+        ResponseUtils.verifyMessage(response, expectedMessage);
     }
 
 }

@@ -1,78 +1,138 @@
 package com.uniquindio.microservicios.taller_auto_prueba.cucumber.stepDefinitions;
 
+import com.github.javafaker.Faker;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.DataManager;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.ResponseUtils;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.UserManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateSteps {
+    private Faker faker = new Faker();
+
+    //datos a actualizar de ejemplo
+    private String name = faker.name().firstName();
+    private String apellido = faker.name().lastName();
+    private String username = faker.name().username();
+    private String email = faker.internet().emailAddress();
+    private String password = faker.internet().password();
+
 
     private Response response;
-    private String userId;
+    private String authToken;
+    private String authenticatedUserId;
 
-    @Given("I am authenticated with user ID {string}")
-    public void iAmAuthenticatedWithUserId(String id) {
-        // Configurar la autenticación y guardar el user ID
-        this.userId = id;
-        System.out.println("Authenticated as user with ID: " + userId);
+    @Given("I am authenticated with a valid token for update")
+    public void iAmAuthenticatedWithValidTokenForUpdate() {
+        // Registrar un nuevo usuario si es necesario y obtener su ID
+        UserManager userManager = UserManager.getInstance();
+        userManager.registerNewUser();
+
+        // Realiza el login para obtener el token de autenticación
+        authToken = userManager.loginAndGetToken();
+        authenticatedUserId = DataManager.getInstance().getUserId("currentUser");
+
+        DataManager.getInstance().setAuthToken("currentToken", authToken);
+        System.out.println("[UpdateSteps] Authenticated user with ID: " + authenticatedUserId + " and token: " + authToken);
     }
 
-    @When("I request to update user by ID {string} with valid data")
-    public void iRequestToUpdateUserByIdWithValidData(String id) {
-        // Configuración de la URL base para RestAssured
+    @When("I request to update my user with valid data")
+    public void iRequestToUpdateTheUserWithValidData() {
         RestAssured.baseURI = "http://localhost:3000";
+        String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
+                name, apellido, username, email, password);
 
-        // Crear el payload con datos de ejemplo para la actualización
-        String payload = "{ \"name\": \"Updated Name\", \"email\": \"updated.email@example.com\" }";
-
-        // Realizar la petición PUT al endpoint de actualización de usuario con el payload
         response = given()
+                .header("Authorization", "Bearer " + authToken)
                 .header("Content-Type", "application/json")
                 .body(payload)
-                .put("/api/users/" + id);
+                .put("/api/users/" + authenticatedUserId);
 
-        // Imprimir la respuesta en consola para fines de depuración
-        System.out.println("Response: " + response.getBody().asString());
+        System.out.println("[UpdateSteps] Response: " + response.getBody().asString());
     }
 
-    @When("I request to update user by ID {string} with an empty request body")
-    public void iRequestToUpdateUserByIdWithAnEmptyRequestBody(String id) {
+    // When I request to update another user with valid data
+    @When("I request to update another user with valid data")
+    public void iRequestToUpdateAnotherUserWithValidData() {
         RestAssured.baseURI = "http://localhost:3000";
+        String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
+                name, apellido, username, email, password);
 
-        // Crear un payload vacío
+        //generamos un nuevo usuario y obtenemos su id
+        UserManager userManager = UserManager.getInstance();
+        userManager.registerNewUser();
+        String anotherUserId = DataManager.getInstance().getUserId("currentUser");
+
+        response = given()
+                .header("Authorization", "Bearer " + authToken)
+                .header("Content-Type", "application/json")
+                .body(payload)
+                .put("/api/users/" + anotherUserId);
+
+        System.out.println("[UpdateSteps] Response: " + response.getBody().asString());
+    }
+
+    // When I request to update my user with an empty request body
+    @When("I request to update my user with an empty request body")
+    public void iRequestToUpdateMyUserWithAnEmptyRequestBody() {
+        RestAssured.baseURI = "http://localhost:3000";
         String payload = "{}";
 
-        // Realizar la petición PUT con un cuerpo vacío
         response = given()
+                .header("Authorization", "Bearer " + authToken)
                 .header("Content-Type", "application/json")
                 .body(payload)
-                .put("/api/users/" + id);
+                .put("/api/users/" + authenticatedUserId);
 
-        System.out.println("Response: " + response.getBody().asString());
+        System.out.println("[UpdateSteps] Response: " + response.getBody().asString());
     }
 
-    @Then("I should receive a {int} response with the updated user details")
-    public void iShouldReceiveAResponseWithTheUpdatedUserDetails(int statusCode) {
-        // Verificar que la respuesta tenga el código de estado esperado
-        assertEquals(statusCode, response.getStatusCode());
+    //    When I request to update my user with valid data but my user is not found
+    @When("I request to update my user with valid data but my user is not found")
+    public void iRequestToUpdateMyUserWithValidDataButMyUserIsNotFound() {
+        RestAssured.baseURI = "http://localhost:3000";
+        String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
+                name, apellido, username, email, password);
 
-        // Opcional: Verificar los detalles del usuario actualizado
-        System.out.println("Updated user details: " + response.getBody().asString());
+        //eliminamos el user para que no se encuentre en la base de datos
+        response = given()
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + authToken)
+                .delete("/api/users/" + authenticatedUserId);
+
+        // Realiza la petición PUT para actualizar el usuario que fue eliminado
+        response = given()
+                .header("Authorization", "Bearer " + authToken)
+                .header("Content-Type", "application/json")
+                .body(payload)
+                .put("/api/users/" + authenticatedUserId);
+
+        System.out.println("[UpdateSteps] Response: " + response.getBody().asString());
     }
 
-    @Then("I should receive a {int} response with a message {string}")
-    public void iShouldReceiveAResponseWithMessage(int statusCode, String message) {
-        // Verificar que la respuesta tenga el código de estado esperado
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Verificar el mensaje de la respuesta
-        String responseMessage = response.jsonPath().getString("message");
-        assertEquals(message, responseMessage);
-
-        System.out.println("Error message: " + responseMessage);
+    @Then("I should receive an update type {int} {string} response")
+    public void iShouldReceiveUserResponse(int statusCode, String statusMessage) {
+        ResponseUtils.verifyStatusCode(response, statusCode);
+        System.out.println("Received " + statusMessage + " response: " + statusCode);
     }
+
+    @Then("I should see an update type message {string}")
+    public void iShouldSeeUserMessage(String expectedMessage) {
+        ResponseUtils.verifyMessage(response, expectedMessage);
+    }
+
+    @Then("I should receive a {int} {string} response with the updated user details")
+    public void iShouldReceiveResponseWithUserDetails(int expectedStatusCode, String expectedStatusMessage) {
+        ResponseUtils.verifyStatusCode(response, expectedStatusCode);
+        System.out.println("Received " + expectedStatusMessage + " response: " + expectedStatusCode);
+        String userId = response.jsonPath().getString("_id");
+        ResponseUtils.verifyMessage(response, authenticatedUserId, userId);
+    }
+
+
 }

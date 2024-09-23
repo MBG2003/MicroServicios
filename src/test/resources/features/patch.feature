@@ -1,31 +1,24 @@
-Feature: Partial update user by ID feature
+Feature: Partial update user by ID
 
-  Scenario: Successfully partially update user by ID
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to partially update user by ID "66e03b7314a4734111e8306c" with valid data
-    Then I should receive a 200 OK response
+  Scenario: Successfully patch user by ID
+    Given I am authenticated with a valid token for patch
+    When I request to patch my user with valid data
+    Then I should receive a 200 "OK" response with the patch user details
 
-  Scenario: Unauthorized to partially update user by ID
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to partially update user by ID "60a7842f58d6c90d58f4e2b7" with valid data
-    Then I should receive a 403 Forbidden response
+  Scenario: Unauthorized to patch another user by ID
+    Given I am authenticated with a valid token for patch
+    When I request to patch another user with valid data
+    Then I should receive a patch type 403 "Forbidden" response
+    And I should see a patch type message "No autorizado para actualizar esta información"
 
-  Scenario: Partial update user by ID with empty request body
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to partially update user by ID "66e03b7314a4734111e8306c" with an empty request body
-    Then I should receive a 400 Bad Request response
+  Scenario: Patch user by ID with an empty request body
+    Given I am authenticated with a valid token for patch
+    When I request to patch my user with an empty request body
+    Then I should receive a patch type 400 "Bad Request" response
+    And I should see a patch type message "El cuerpo de la solicitud no puede estar vacío"
 
-  Scenario: User not found by ID for partial update
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to partially update user by ID "60a7842f58d6c90d58f4e2b8" with valid data
-    Then I should receive a 404 Not Found response
-
-  Scenario: Invalid ID format for partial update
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to partially update user by ID "invalid-id" with valid data
-    Then I should receive a 400 Bad Request response
-
-  Scenario: Server error when partially updating user
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to partially update user by ID "66e03b7314a4734111e8306c" with valid data
-    Then I should receive a 500 Internal Server Error response
+  Scenario: User ID not found during patch
+    Given I am authenticated with a valid token for patch
+    When I request to patch my user but my user is not found
+    Then I should receive a patch type 404 "Not Found" response
+    And I should see a patch type message "Usuario no encontrado"

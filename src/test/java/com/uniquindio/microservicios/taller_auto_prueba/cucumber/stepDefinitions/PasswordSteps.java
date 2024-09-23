@@ -1,116 +1,102 @@
 package com.uniquindio.microservicios.taller_auto_prueba.cucumber.stepDefinitions;
 
+import com.github.javafaker.Faker;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.DataManager;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.ResponseUtils;
+import com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils.UserManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
 
 public class PasswordSteps {
 
     private Response response;
+    private Faker faker = new Faker();
+    private String email;
+    private String newPassword;
 
     @Given("I am on the password recovery page")
     public void iAmOnThePasswordRecoveryPage() {
-        // Simulación de la navegación a la página de recuperación de contraseñas
         System.out.println("Navigating to the password recovery page");
     }
 
-    @When("I submit a valid email {string} and a new password {string}")
-    public void iSubmitValidEmailAndNewPassword(String email, String newPassword) {
-        RestAssured.baseURI = "http://localhost:3000";
+    @Given("I have registered a new user")
+    public void iHaveRegisteredANewUser() {
 
-        // Crea el payload con el email y la nueva contraseña
+        // Reutilizando la información del usuario registrado
+        email = UserManager.getInstance().getEmail();
+        if (email == null) {
+            // Registrando un nuevo usuario
+            UserManager.getInstance().registerNewUser();
+            email = UserManager.getInstance().getEmail();
+            System.out.println("New email is: " + email);
+        }else{
+            System.out.println("Old email is: " + email);
+        }
+    }
+
+    @When("I submit the registered user's email and a new password")
+    public void iSubmitRegisteredUserEmailAndNewPassword() {
+        RestAssured.baseURI = "http://localhost:3000";
+        newPassword = faker.internet().password();
+
         String payload = String.format("{ \"email\": \"%s\", \"newPassword\": \"%s\" }", email, newPassword);
 
-        // Realiza la petición POST al endpoint de recuperación de contraseña
         response = given()
                 .header("Content-Type", "application/json")
                 .body(payload)
-                .post("/api/auth/recover-password");
-
-        // Imprime la respuesta en consola para fines de depuración
-        System.out.println("Response: " + response.getBody().asString());
+                .put("/api/auth/password");
     }
 
     @When("I submit no email and a new password {string}")
     public void iSubmitNoEmailAndNewPassword(String newPassword) {
         RestAssured.baseURI = "http://localhost:3000";
-
-        // Crea el payload sin el email
         String payload = String.format("{ \"newPassword\": \"%s\" }", newPassword);
 
-        // Realiza la petición POST
         response = given()
                 .header("Content-Type", "application/json")
                 .body(payload)
-                .post("/api/auth/recover-password");
-
-        System.out.println("Response: " + response.getBody().asString());
+                .put("/api/auth/password");
     }
 
-    @When("I submit an email {string} and no new password")
-    public void iSubmitEmailAndNoNewPassword(String email) {
+    @When("I submit the registered user's email and no new password")
+    public void iSubmitEmailAndNoNewPassword() {
         RestAssured.baseURI = "http://localhost:3000";
-
-        // Crea el payload sin la nueva contraseña
         String payload = String.format("{ \"email\": \"%s\" }", email);
 
-        // Realiza la petición POST
         response = given()
                 .header("Content-Type", "application/json")
                 .body(payload)
-                .post("/api/auth/recover-password");
-
-        System.out.println("Response: " + response.getBody().asString());
+                .put("/api/auth/password");
     }
 
-    @When("the server fails to process the request")
-    public void theServerFailsToProcessTheRequest() {
-        // Este método debe simular el fallo del servidor en un escenario de prueba.
-        // Generalmente esto se configura en el entorno de prueba o mediante un mock.
-        System.out.println("Simulating server failure");
+    @When("I submit an unregistered email and a new password")
+    public void iSubmitUnregisteredEmailAndNewPassword() {
+        RestAssured.baseURI = "http://localhost:3000";
+        String unregisteredEmail = faker.internet().emailAddress();
+        String newPassword = faker.internet().password();
+
+        String payload = String.format("{ \"email\": \"%s\", \"newPassword\": \"%s\" }", unregisteredEmail, newPassword);
+
+        response = given()
+                .header("Content-Type", "application/json")
+                .body(payload)
+                .put("/api/auth/password");
     }
 
-    @Then("I should receive a {int} OK response")
-    public void iShouldReceiveA200OKResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 200 (OK)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica si la respuesta contiene un mensaje de éxito
-        String successMessage = response.jsonPath().getString("message");
-        System.out.println("Success message: " + successMessage);
+    @Then("I should receive a password type {int} {string} response")
+    public void iShouldReceivePasswordResponse(int statusCode, String statusMessage) {
+        ResponseUtils.verifyStatusCode(response, statusCode);
+        System.out.println("Received " + statusMessage + " response: " + statusCode);
     }
 
-    @Then("I should receive a {int} Bad Request response")
-    public void iShouldReceiveABadRequestResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 400 (Bad Request)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica el mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("message");
-        System.out.println("Error message: " + errorMessage);
-    }
-
-    @Then("I should receive a {int} Internal Server Error response")
-    public void iShouldReceiveAnInternalServerErrorResponse(int statusCode) {
-        // Verifica que la respuesta tenga el código 500 (Internal Server Error)
-        assertEquals(statusCode, response.getStatusCode());
-
-        // Opcional: Verifica el mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("message");
-        System.out.println("Error message: " + errorMessage);
-    }
-
-    @Then("the password should be successfully updated")
-    public void thePasswordShouldBeSuccessfullyUpdated() {
-        // Aquí se puede agregar una lógica para verificar que la contraseña se haya actualizado.
-        // Esto puede incluir consultas adicionales o validaciones basadas en el contexto de la aplicación.
-        System.out.println("Password should be successfully updated");
+    @Then("I should see a password type message {string}")
+    public void iShouldSeePasswordMessage(String expectedMessage) {
+        ResponseUtils.verifyMessage(response, expectedMessage);
     }
 }
-
-

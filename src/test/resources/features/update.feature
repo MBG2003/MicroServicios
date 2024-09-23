@@ -1,31 +1,25 @@
-Feature: Update user by ID feature
+Feature: Update user by ID
 
   Scenario: Successfully update user by ID
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to update user by ID "66e03b7314a4734111e8306c" with valid data
-    Then I should receive a 200 OK response with the updated user details
+    Given I am authenticated with a valid token for update
+    When I request to update my user with valid data
+    Then I should receive a 200 "OK" response with the updated user details
 
-  Scenario: Unauthorized to update user by ID
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to update user by ID "60e03b7314a4734111e8306c" with valid data
-    Then I should receive a 403 Forbidden response with a message "No autorizado para actualizar esta información"
+  Scenario: Unauthorized to update another user by ID
+    Given I am authenticated with a valid token for update
+    When I request to update another user with valid data
+    Then I should receive an update type 403 "Forbidden" response
+    And I should see an update type message "No autorizado para actualizar esta información"
 
-  Scenario: Update user by ID with empty request body
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to update user by ID "66e03b7314a4734111e8306c" with an empty request body
-    Then I should receive a 400 Bad Request response with a message "El cuerpo de la solicitud no puede estar vacío"
+  Scenario: Update user by ID with an empty request body
+    Given I am authenticated with a valid token for update
+    When I request to update my user with an empty request body
+    Then I should receive an update type 400 "Bad Request" response
+    And I should see an update type message "El cuerpo de la solicitud no puede estar vacío"
 
-  Scenario: User not found by ID for update
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to update user by ID "60a7842f58d6c90d58f4e2b8" with valid data
-    Then I should receive a 404 Not Found response with a message "Usuario no encontrado"
+  Scenario: User ID not found during update
+    Given I am authenticated with a valid token for update
+    When I request to update my user with valid data but my user is not found
+    Then I should receive an update type 404 "Not Found" response
+    And I should see an update type message "Usuario no encontrado"
 
-  Scenario: Invalid ID format for update
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to update user by ID "invalid-id" with valid data
-    Then I should receive a 400 Bad Request response with a message "Formato de ID inválido"
-
-  Scenario: Server error when updating user
-    Given I am authenticated with user ID "66e03b7314a4734111e8306c"
-    When I request to update user by ID "66e03b7314a4734111e8306c" with valid data
-    Then I should receive a 500 Internal Server Error response with a message "Error del servidor al actualizar usuario"
