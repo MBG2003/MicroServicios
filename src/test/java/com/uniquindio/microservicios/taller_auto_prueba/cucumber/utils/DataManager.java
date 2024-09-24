@@ -8,10 +8,8 @@ public class DataManager {
     private Map<String, String> userIds = new HashMap<>();
     private Map<String, String> authTokens = new HashMap<>();
 
-    // Constructor privado para evitar la creación de instancias externas
     private DataManager() {}
 
-    // Método para obtener la instancia única del DataManager
     public static DataManager getInstance() {
         if (instance == null) {
             instance = new DataManager();

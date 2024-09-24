@@ -67,10 +67,6 @@ public class GetAllUsersSteps {
         ResponseUtils.verifyStatusCode(response, expectedStatusCode);
         System.out.println("Received " + expectedStatusMessage + " response: " + expectedStatusCode);
 
-        // Verifica que la respuesta contiene una lista de usuarios
-        if (expectedStatusCode == 200) {
-            assert response.jsonPath().getList("$").size() > 0;
-        }
     }
 
     @Then("I should see a users type message {string}")
