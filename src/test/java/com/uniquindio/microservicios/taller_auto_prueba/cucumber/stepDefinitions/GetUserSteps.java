@@ -33,7 +33,7 @@ public class GetUserSteps {
 
     @When("I request to get my user by ID")
     public void iRequestToGetMyUserById() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.206.249:3000";
 
         // Realiza la petición GET para obtener el usuario por ID
         response = given()
@@ -47,7 +47,7 @@ public class GetUserSteps {
     @When("I request to get another user's ID")
     public void iRequestToGetAnotherUserId() {
         String anotherUserId = "invalidUserId12345";
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.206.249:3000";
 
         response = given()
                 .header("Content-Type", "application/json")
@@ -59,7 +59,7 @@ public class GetUserSteps {
 
     @When("I request to get user by a non-existing ID")
     public void iRequestToGetNonExistingUserById() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.206.249:3000";
 
         String nonExistingUserId = authenticatedUserId;
 

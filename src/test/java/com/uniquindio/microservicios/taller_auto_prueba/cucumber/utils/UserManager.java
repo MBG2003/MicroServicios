@@ -56,7 +56,7 @@ public class UserManager {
         password = faker.internet().password();
 
         // Define la base URI de la API
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.206.249:3000";
 
         String payload = String.format(
                 "{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
