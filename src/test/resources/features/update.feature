@@ -23,3 +23,6 @@ Feature: Update user by ID
     Then I should receive an update type 404 "Not Found" response
     And I should see an update type message "Usuario no encontrado"
 
+  Scenario: Validar la estructura de la respuesta con json schema
+    Given I am authenticated with a valid token for update
+    Then la respuesta debe cumplir con el esquema "updateSchema.json"

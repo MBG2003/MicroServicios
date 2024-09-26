@@ -22,7 +22,6 @@ public class UpdateSteps {
     private String email = faker.internet().emailAddress();
     private String password = faker.internet().password();
 
-
     private Response response;
     private String authToken;
     private String authenticatedUserId;
@@ -134,5 +133,12 @@ public class UpdateSteps {
         ResponseUtils.verifyMessage(response, authenticatedUserId, userId);
     }
 
-
+    @Then("^la respuesta debe cumplir con el esquema \"([^\"]*)\"$")
+    public void validateApiResponse(String schemaFileName) {
+        try {
+            ResponseUtils.validateResponseAgainstSchema(response.getBody().asString(), schemaFileName);
+        } catch (Exception e) {
+            System.out.println("Error al validar la respuesta contra el esquema: " + e.getMessage());
+        }
+    }
 }
