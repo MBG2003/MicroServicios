@@ -37,7 +37,7 @@ public class DeleteSteps {
 
     @When("I request to delete my user")
     public void iRequestToUpdateTheUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.206.249:3000";
+        RestAssured.baseURI = "http://192.168.201.200:3000";
 
         response = given()
                 .header("Authorization", "Bearer " + authToken)
@@ -50,7 +50,7 @@ public class DeleteSteps {
     // WhenI request to delete another user
     @When("I request to delete another user")
     public void iRequestToUpdateAnotherUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.206.249:3000";
+        RestAssured.baseURI = "http://192.168.201.200:3000";
         UserManager userManager = UserManager.getInstance();
         userManager.registerNewUser();
         String anotherUserId = DataManager.getInstance().getUserId("currentUser");
