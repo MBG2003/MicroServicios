@@ -30,7 +30,7 @@ public class GetAllUsersSteps {
 
     @When("I request to get all users")
     public void iRequestToGetAllUsers() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         // Realiza la petición GET al endpoint para obtener todos los usuarios
         response = given()
@@ -43,7 +43,7 @@ public class GetAllUsersSteps {
 
     @When("I request to get all users and there are no users")
     public void iRequestToGetAllUsersAndThereAreNoUsers() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         // Eliminamos todos los usuarios
         response = given()
