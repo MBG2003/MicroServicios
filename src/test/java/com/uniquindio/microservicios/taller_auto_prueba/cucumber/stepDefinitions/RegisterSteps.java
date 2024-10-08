@@ -28,7 +28,7 @@ public class RegisterSteps {
     @Given("I am on the registration page")
     public void iAmOnTheRegistrationPage() {
         System.out.println("Navigating to registration page");
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         // Generate random data
         nombre = faker.name().firstName();
