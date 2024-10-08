@@ -37,7 +37,7 @@ public class PatchUserSteps {
 
     @When("I request to patch my user with valid data")
     public void iRequestToPartiallyUpdateMyUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         Faker faker = new Faker();
         String payload = String.format("{ \"nombre\": \"%s\" }", faker.name().firstName());
@@ -55,7 +55,7 @@ public class PatchUserSteps {
 
     @When("I request to patch my user with an empty request body")
     public void iRequestToPartiallyUpdateMyUserWithAnEmptyRequestBody() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         String payload = "{}";
 
         response = given()
@@ -69,7 +69,7 @@ public class PatchUserSteps {
 
     @When("I request to patch another user with valid data")
     public void iRequestToPartiallyUpdateAnotherUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         Faker faker = new Faker();
         String payload = String.format("{ \"nombre\": \"%s\" }", faker.name().firstName());
 
@@ -90,7 +90,7 @@ public class PatchUserSteps {
     //    When I request to patch my user but my user is not found
     @When("I request to patch my user but my user is not found")
     public void iRequestToPartiallyUpdateMyUserButMyUserIsNotFound() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         Faker faker = new Faker();
         String payload = String.format("{ \"nombre\": \"%s\" }", faker.name().firstName());
 
@@ -112,7 +112,7 @@ public class PatchUserSteps {
 
     @When("I request to patch my user with an invalid ID format")
     public void iRequestToPartiallyUpdateMyUserWithAnInvalidIDFormat() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         String invalidUserId = "12345";
 
