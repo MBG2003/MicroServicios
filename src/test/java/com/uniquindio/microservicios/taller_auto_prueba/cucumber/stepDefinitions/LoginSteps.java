@@ -58,7 +58,7 @@ public class LoginSteps {
 
     @When("I try to login with the registered user's email and without providing the password")
     public void iTryToLoginWithoutProvidingThePassword() {
-        RestAssured.baseURI = "http://192.168.201.200:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         String payload = String.format("{ \"email\": \"%s\" }", userManager.getEmail());
 
