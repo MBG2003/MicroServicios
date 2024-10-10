@@ -42,7 +42,7 @@ public class UpdateSteps {
 
     @When("I request to update my user with valid data")
     public void iRequestToUpdateTheUserWithValidData() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
                 name, apellido, username, email, password);
 
@@ -58,7 +58,7 @@ public class UpdateSteps {
     // When I request to update another user with valid data
     @When("I request to update another user with valid data")
     public void iRequestToUpdateAnotherUserWithValidData() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
                 name, apellido, username, email, password);
 
@@ -79,7 +79,7 @@ public class UpdateSteps {
     // When I request to update my user with an empty request body
     @When("I request to update my user with an empty request body")
     public void iRequestToUpdateMyUserWithAnEmptyRequestBody() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         String payload = "{}";
 
         response = given()

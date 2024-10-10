@@ -33,7 +33,7 @@ public class GetUserSteps {
 
     @When("I request to get my user by ID")
     public void iRequestToGetMyUserById() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
 
         // Realiza la petición GET para obtener el usuario por ID
         response = given()

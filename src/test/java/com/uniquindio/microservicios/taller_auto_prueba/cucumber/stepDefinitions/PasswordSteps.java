@@ -42,7 +42,7 @@ public class PasswordSteps {
 
     @When("I submit the registered user's email and a new password")
     public void iSubmitRegisteredUserEmailAndNewPassword() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         newPassword = faker.internet().password();
 
         String payload = String.format("{ \"email\": \"%s\", \"newPassword\": \"%s\" }", email, newPassword);
@@ -55,7 +55,7 @@ public class PasswordSteps {
 
     @When("I submit no email and a new password {string}")
     public void iSubmitNoEmailAndNewPassword(String newPassword) {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         String payload = String.format("{ \"newPassword\": \"%s\" }", newPassword);
 
         response = given()
@@ -66,7 +66,7 @@ public class PasswordSteps {
 
     @When("I submit the registered user's email and no new password")
     public void iSubmitEmailAndNoNewPassword() {
-        RestAssured.baseURI = "http://localhost:3000";
+        RestAssured.baseURI = "http://192.168.199.138:3000";
         String payload = String.format("{ \"email\": \"%s\" }", email);
 
         response = given()
