@@ -3,6 +3,7 @@ package com.uniquindio.microservicios.taller_auto_prueba.cucumber.utils;
 import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 
 import static io.restassured.RestAssured.given;
 
@@ -10,6 +11,7 @@ public class UserManager {
     private static UserManager instance = null;
     private Faker faker = new Faker();
 
+    private final String apiUrl = "192.168.80.27";
     private String nombre;
     private String apellido;
     private String username;
@@ -56,7 +58,7 @@ public class UserManager {
         password = faker.internet().password();
 
         // Define la base URI de la API
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         String payload = String.format(
                 "{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",

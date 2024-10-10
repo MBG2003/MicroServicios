@@ -9,12 +9,14 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 import static io.restassured.RestAssured.given;
 
 public class PasswordSteps {
 
+    private final String apiUrl = "192.168.80.27";
     private Response response;
     private Faker faker = new Faker();
     private String email;
@@ -42,7 +44,7 @@ public class PasswordSteps {
 
     @When("I submit the registered user's email and a new password")
     public void iSubmitRegisteredUserEmailAndNewPassword() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         newPassword = faker.internet().password();
 
         String payload = String.format("{ \"email\": \"%s\", \"newPassword\": \"%s\" }", email, newPassword);
@@ -55,7 +57,7 @@ public class PasswordSteps {
 
     @When("I submit no email and a new password {string}")
     public void iSubmitNoEmailAndNewPassword(String newPassword) {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = String.format("{ \"newPassword\": \"%s\" }", newPassword);
 
         response = given()
@@ -66,7 +68,7 @@ public class PasswordSteps {
 
     @When("I submit the registered user's email and no new password")
     public void iSubmitEmailAndNoNewPassword() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = String.format("{ \"email\": \"%s\" }", email);
 
         response = given()
@@ -77,7 +79,7 @@ public class PasswordSteps {
 
     @When("I submit an unregistered email and a new password")
     public void iSubmitUnregisteredEmailAndNewPassword() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String unregisteredEmail = faker.internet().emailAddress();
         String newPassword = faker.internet().password();
 

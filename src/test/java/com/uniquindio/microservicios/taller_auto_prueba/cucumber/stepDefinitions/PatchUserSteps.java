@@ -9,12 +9,14 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class PatchUserSteps {
 
+    private final String apiUrl = "192.168.80.27";
     private Response response;
     private String authToken;
     private String authenticatedUserId;
@@ -37,7 +39,7 @@ public class PatchUserSteps {
 
     @When("I request to patch my user with valid data")
     public void iRequestToPartiallyUpdateMyUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         Faker faker = new Faker();
         String payload = String.format("{ \"nombre\": \"%s\" }", faker.name().firstName());
@@ -55,7 +57,7 @@ public class PatchUserSteps {
 
     @When("I request to patch my user with an empty request body")
     public void iRequestToPartiallyUpdateMyUserWithAnEmptyRequestBody() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = "{}";
 
         response = given()
@@ -69,7 +71,7 @@ public class PatchUserSteps {
 
     @When("I request to patch another user with valid data")
     public void iRequestToPartiallyUpdateAnotherUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         Faker faker = new Faker();
         String payload = String.format("{ \"nombre\": \"%s\" }", faker.name().firstName());
 
@@ -90,7 +92,7 @@ public class PatchUserSteps {
     //    When I request to patch my user but my user is not found
     @When("I request to patch my user but my user is not found")
     public void iRequestToPartiallyUpdateMyUserButMyUserIsNotFound() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         Faker faker = new Faker();
         String payload = String.format("{ \"nombre\": \"%s\" }", faker.name().firstName());
 
@@ -112,7 +114,7 @@ public class PatchUserSteps {
 
     @When("I request to patch my user with an invalid ID format")
     public void iRequestToPartiallyUpdateMyUserWithAnInvalidIDFormat() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         String invalidUserId = "12345";
 

@@ -9,11 +9,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 
 import static io.restassured.RestAssured.given;
 
 public class LoginSteps {
 
+    private final String apiUrl = "192.168.80.27";
     private Response response;
     private UserManager userManager = UserManager.getInstance();
 
@@ -29,7 +31,7 @@ public class LoginSteps {
 
     @When("I login with the registered user's email and password")
     public void iLoginWithRegisteredUserCredentials() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         String payload = String.format("{ \"email\": \"%s\", \"password\": \"%s\" }",
                 userManager.getEmail(), userManager.getPassword());
@@ -46,7 +48,7 @@ public class LoginSteps {
 
     @When("I try to login without providing the email and with the registered user's password")
     public void iTryToLoginWithoutProvidingTheEmail() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         String payload = String.format("{ \"password\": \"%s\" }", userManager.getPassword());
 
@@ -58,7 +60,7 @@ public class LoginSteps {
 
     @When("I try to login with the registered user's email and without providing the password")
     public void iTryToLoginWithoutProvidingThePassword() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         String payload = String.format("{ \"email\": \"%s\" }", userManager.getEmail());
 
@@ -70,7 +72,7 @@ public class LoginSteps {
 
     @When("I try to login with an invalid email or password")
     public void iTryToLoginWithInvalidCredentials() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         Faker faker = new Faker();
 
         String invalidEmail = faker.internet().emailAddress();

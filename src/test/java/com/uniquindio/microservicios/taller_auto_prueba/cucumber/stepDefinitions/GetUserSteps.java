@@ -8,11 +8,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 
 import static io.restassured.RestAssured.given;
 
 public class GetUserSteps {
 
+    private final String apiUrl = "192.168.80.27";
     private Response response;
     private String authToken;
     private String authenticatedUserId;
@@ -33,7 +35,7 @@ public class GetUserSteps {
 
     @When("I request to get my user by ID")
     public void iRequestToGetMyUserById() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         // Realiza la petición GET para obtener el usuario por ID
         response = given()
@@ -47,7 +49,7 @@ public class GetUserSteps {
     @When("I request to get another user's ID")
     public void iRequestToGetAnotherUserId() {
         String anotherUserId = "invalidUserId12345";
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         response = given()
                 .header("Content-Type", "application/json")
@@ -59,7 +61,7 @@ public class GetUserSteps {
 
     @When("I request to get user by a non-existing ID")
     public void iRequestToGetNonExistingUserById() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         String nonExistingUserId = authenticatedUserId;
 

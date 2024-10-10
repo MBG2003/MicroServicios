@@ -9,13 +9,16 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class DeleteSteps {
-    private Faker faker = new Faker();
 
+    private final String apiUrl = "192.168.80.27";
+    private Faker faker = new Faker();
     private Response response;
     private String authToken;
     private String authenticatedUserId;
@@ -37,7 +40,7 @@ public class DeleteSteps {
 
     @When("I request to delete my user")
     public void iRequestToUpdateTheUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         response = given()
                 .header("Authorization", "Bearer " + authToken)
@@ -50,7 +53,7 @@ public class DeleteSteps {
     // WhenI request to delete another user
     @When("I request to delete another user")
     public void iRequestToUpdateAnotherUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         UserManager userManager = UserManager.getInstance();
         userManager.registerNewUser();
         String anotherUserId = DataManager.getInstance().getUserId("currentUser");

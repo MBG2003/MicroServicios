@@ -9,12 +9,15 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
+
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateSteps {
     private Faker faker = new Faker();
 
+    private final String apiUrl = "192.168.80.27";
     //datos a actualizar de ejemplo
     private String name = faker.name().firstName();
     private String apellido = faker.name().lastName();
@@ -42,7 +45,7 @@ public class UpdateSteps {
 
     @When("I request to update my user with valid data")
     public void iRequestToUpdateTheUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
                 name, apellido, username, email, password);
 
@@ -58,7 +61,7 @@ public class UpdateSteps {
     // When I request to update another user with valid data
     @When("I request to update another user with valid data")
     public void iRequestToUpdateAnotherUserWithValidData() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
                 name, apellido, username, email, password);
 
@@ -79,7 +82,7 @@ public class UpdateSteps {
     // When I request to update my user with an empty request body
     @When("I request to update my user with an empty request body")
     public void iRequestToUpdateMyUserWithAnEmptyRequestBody() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = "{}";
 
         response = given()
@@ -94,7 +97,7 @@ public class UpdateSteps {
     //    When I request to update my user with valid data but my user is not found
     @When("I request to update my user with valid data but my user is not found")
     public void iRequestToUpdateMyUserWithValidDataButMyUserIsNotFound() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
         String payload = String.format("{ \"nombre\": \"%s\", \"apellido\": \"%s\", \"username\": \"%s\", \"email\": \"%s\", \"password\": \"%s\" }",
                 name, apellido, username, email, password);
 

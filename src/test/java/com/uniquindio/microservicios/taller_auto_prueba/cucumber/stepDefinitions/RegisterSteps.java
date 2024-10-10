@@ -8,6 +8,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 import static io.restassured.RestAssured.given;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RegisterSteps {
 
+    private final String apiUrl = "192.168.80.27";
     private Response response;
     private Faker faker = new Faker();
 
@@ -28,7 +30,7 @@ public class RegisterSteps {
     @Given("I am on the registration page")
     public void iAmOnTheRegistrationPage() {
         System.out.println("Navigating to registration page");
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         // Generate random data
         nombre = faker.name().firstName();

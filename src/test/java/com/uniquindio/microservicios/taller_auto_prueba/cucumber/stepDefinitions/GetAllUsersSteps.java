@@ -8,11 +8,13 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Value;
 
 import static io.restassured.RestAssured.given;
 
 public class GetAllUsersSteps {
 
+    private final String apiUrl = "192.168.80.27";
     private Response response;
     private String authToken;
 
@@ -30,7 +32,7 @@ public class GetAllUsersSteps {
 
     @When("I request to get all users")
     public void iRequestToGetAllUsers() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         // Realiza la petición GET al endpoint para obtener todos los usuarios
         response = given()
@@ -43,7 +45,7 @@ public class GetAllUsersSteps {
 
     @When("I request to get all users and there are no users")
     public void iRequestToGetAllUsersAndThereAreNoUsers() {
-        RestAssured.baseURI = "http://192.168.199.138:3000";
+        RestAssured.baseURI = "http://" + apiUrl + ":3000";
 
         // Eliminamos todos los usuarios
         response = given()
