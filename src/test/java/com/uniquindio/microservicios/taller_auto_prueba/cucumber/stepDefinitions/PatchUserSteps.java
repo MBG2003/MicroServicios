@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PatchUserSteps {
 
-    private final String apiUrl = "192.168.80.27";
+    private final String apiUrl = "192.168.1.126";
     private Response response;
     private String authToken;
     private String authenticatedUserId;

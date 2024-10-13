@@ -11,7 +11,7 @@ public class UserManager {
     private static UserManager instance = null;
     private Faker faker = new Faker();
 
-    private final String apiUrl = "192.168.80.27";
+    private final String apiUrl = "192.168.1.126";
     private String nombre;
     private String apellido;
     private String username;
