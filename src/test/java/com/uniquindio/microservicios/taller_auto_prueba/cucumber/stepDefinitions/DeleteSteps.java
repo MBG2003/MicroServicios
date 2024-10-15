@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DeleteSteps {
 
-    private final String apiUrl = "192.168.1.126";
+    private final String apiUrl = "192.168.204.207";
     private Faker faker = new Faker();
     private Response response;
     private String authToken;

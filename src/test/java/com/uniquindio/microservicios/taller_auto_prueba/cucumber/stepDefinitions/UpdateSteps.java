@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class UpdateSteps {
     private Faker faker = new Faker();
 
-    private final String apiUrl = "192.168.1.126";
+    private final String apiUrl = "192.168.204.207";
     //datos a actualizar de ejemplo
     private String name = faker.name().firstName();
     private String apellido = faker.name().lastName();

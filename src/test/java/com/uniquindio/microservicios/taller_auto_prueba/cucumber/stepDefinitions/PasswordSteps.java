@@ -16,7 +16,7 @@ import static io.restassured.RestAssured.given;
 
 public class PasswordSteps {
 
-    private final String apiUrl = "192.168.1.126";
+    private final String apiUrl = "192.168.204.207";
     private Response response;
     private Faker faker = new Faker();
     private String email;

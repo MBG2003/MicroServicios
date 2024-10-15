@@ -14,7 +14,7 @@ import static io.restassured.RestAssured.given;
 
 public class GetUserSteps {
 
-    private final String apiUrl = "192.168.1.126";
+    private final String apiUrl = "192.168.204.207";
     private Response response;
     private String authToken;
     private String authenticatedUserId;
