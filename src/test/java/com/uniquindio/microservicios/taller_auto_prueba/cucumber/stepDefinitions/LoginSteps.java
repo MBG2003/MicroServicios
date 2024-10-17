@@ -15,7 +15,7 @@ import static io.restassured.RestAssured.given;
 
 public class LoginSteps {
 
-    private final String apiUrl = "192.168.204.207";
+    private final String apiUrl = "192.168.196.158";
     private Response response;
     private UserManager userManager = UserManager.getInstance();
 
