@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RegisterSteps {
 
-    private final String apiUrl = "192.168.196.158";
+    private final String apiUrl = "192.168.206.49";
     private Response response;
     private Faker faker = new Faker();
 
