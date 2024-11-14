@@ -88,7 +88,7 @@ public class ProfileSteps {
         createdProfile.user_id = userID;
         response = RestAssured
                 .given()
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzRlNWU2YjYzNjM0ZWFjYjEzOTA2YSIsImlhdCI6MTczMTU1MTU3NiwiZXhwIjoxNzMxNTU1MTc2fQ.-Ws_LTltixX21xFyrzS0dvU1QmwVXyOhnVEZqQ-59QI")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzYwZDQ3YzhhNTA1Mjc4YTNiNTgyNSIsImlhdCI6MTczMTU5NTY2OSwiZXhwIjoxNzMxNTk5MjY5fQ.LuLJEw4iTDCXM4LzV7cAkmOQqZBbSwHp40QOL-vJhEo")
                 .get(BASE_URL + "/profile-api/profile/" + userID);
     }
 
@@ -96,7 +96,7 @@ public class ProfileSteps {
     public void iRequestTheUserProfileWithUserID(String userID) {
         response = RestAssured
                 .given()
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzU3OGViYzhhNTA1Mjc4YTNiNTdhOCIsImlhdCI6MTczMTU1NzcyNywiZXhwIjoxNzMxNTYxMzI3fQ.jl90Z-Z7dOobS1FdSdLRPTu154FnkqsdH6rqn53qOrU")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzYwZDQ3YzhhNTA1Mjc4YTNiNTgyNSIsImlhdCI6MTczMTU5NTY2OSwiZXhwIjoxNzMxNTk5MjY5fQ.LuLJEw4iTDCXM4LzV7cAkmOQqZBbSwHp40QOL-vJhEo")
                 .accept("application/json")
                 .when()
                 .get(BASE_URL + "/profile-api/profile/" + userID);
@@ -145,7 +145,7 @@ public class ProfileSteps {
         createdProfile.biography = newBiography;
         response = RestAssured
                 .given()
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzU3OGViYzhhNTA1Mjc4YTNiNTdhOCIsImlhdCI6MTczMTU1NzcyNywiZXhwIjoxNzMxNTYxMzI3fQ.jl90Z-Z7dOobS1FdSdLRPTu154FnkqsdH6rqn53qOrU")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzYwZDQ3YzhhNTA1Mjc4YTNiNTgyNSIsImlhdCI6MTczMTU5NTY2OSwiZXhwIjoxNzMxNTk5MjY5fQ.LuLJEw4iTDCXM4LzV7cAkmOQqZBbSwHp40QOL-vJhEo")
                 .contentType("application/json")
                 .body(Map.of("biography", newBiography))
                 .when()
